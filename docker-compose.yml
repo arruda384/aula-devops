@@ -1,20 +1,19 @@
-# Usa uma imagem leve do Node.js
-FROM node:18-alpine
-
-# Cria a pasta de trabalho dentro do container
-WORKDIR /usr/src/app
-
-# Copia os arquivos de dependências
-COPY package*.json ./
-
-# Instala as dependências
-RUN npm install
-
-# Copia o restante do código
-COPY . .
-
-# Expõe a porta que a aplicação usa
-EXPOSE 3000
-
-# Comando para rodar a aplicação
-CMD ["npm", "start"]
+services:
+  app-node:
+    # O ponto (.) diz para o Docker buscar o "Dockerfile" nesta mesma pasta
+    build: .
+    
+    # Nome que aparecerá quando você der "docker ps" no servidor
+    container_name: node_teste_api
+    
+    # Faz o container subir sozinho se o servidor reiniciar ou o app cair
+    restart: always
+    
+    ports:
+      # Formato: [Porta do Servidor]:[Porta do Container]
+      # A porta 3000 do seu servidor apontará para a 3000 do Node
+      - "3000:3000"
+    
+    # Define variáveis de ambiente se precisar (opcional)
+    environment:
+      - NODE_ENV=production
