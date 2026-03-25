@@ -1,21 +1,30 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
 
-// Rota 1: Inicial
-app.get('/', (req, res) => {
-  res.json({ message: "API voando! 🚀", status: "online" });
+// Middleware para entender JSON no corpo da requisição
+app.use(express.json());
+// Serve arquivos estáticos (para a sua tela HTML)
+app.use(express.static('.'));
+
+// A variável que "limpa" quando o servidor reinicia
+let listaAlunos = [
+  { id: 1, nome: "Rodrigo Arruda" }
+];
+
+// Rota para listar
+app.get('/alunos', (req, res) => {
+  res.json(listaAlunos);
 });
 
-// Rota 2: Teste de Deploy
-app.get('/deploy', (req, res) => {
-  res.json({ 
-    message: "Deploy automático com Docker funcionando!",
-    timestamp: new Date().toISOString()
-  });
+// Rota para adicionar (POST)
+app.post('/alunos', (req, res) => {
+  const { nome } = req.body;
+  if (!nome) return res.status(400).json({ error: "Nome é obrigatório" });
+
+  const novoAluno = { id: Date.now(), nome };
+  listaAlunos.push(novoAluno);
+  
+  res.status(201).json(novoAluno);
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
-
+app.listen(3000, () => console.log("Servidor rodando na porta 3000"));
