@@ -12,12 +12,12 @@ let listaAlunos = [
 ];
 
 // Rota para listar
-app.get('/alunos', (req, res) => {
+app.get('/pessoas', (req, res) => {
   res.json(listaAlunos);
 });
 
 // Rota para adicionar (POST)
-app.post('/alunos', (req, res) => {
+app.post('/pessoas', (req, res) => {
   const { nome } = req.body;
   if (!nome) return res.status(400).json({ error: "Nome é obrigatório" });
 
