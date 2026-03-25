@@ -16,6 +16,11 @@ app.get('/pessoas', (req, res) => {
   res.json(listaAlunos);
 });
 
+app.get('/pessoas', (req, res) => {
+  res.json(listaAlunos);
+});
+
+
 // Rota para adicionar (POST)
 app.post('/pessoas', (req, res) => {
   const { nome } = req.body;

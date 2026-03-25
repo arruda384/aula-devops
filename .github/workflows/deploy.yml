@@ -30,7 +30,8 @@ jobs:
             ls -la
 
             # O comando do docker agora apontando explicitamente para o arquivo se necessário
-            docker compose up -d --build
-
+       
+            cd /home/deploy/apps/app
             docker compose down
             docker compose up -d --build
+
