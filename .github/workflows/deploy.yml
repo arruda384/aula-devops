@@ -16,17 +16,18 @@ jobs:
           username: deploy                   # Usuário com permissão Docker
           key: ${{ secrets.VPS_SSH_KEY }}     # Conteúdo da sua id_rsa
           script: |
-            # Garante que a pasta exista sem dar erro
             mkdir -p /home/deploy/apps/app
             cd /home/deploy/apps/app
 
-            # Lógica de "Primeiro Deploy": se não tem .git, clona o repo
             if [ ! -d ".git" ]; then
-              git clone https://github.com/${{ github.repository }}.git .
+              # Tente clonar via HTTPS (se for público) ou SSH
+              git clone https://github.com/arruda384/aula-devops.git .
             else
-              # Se já existe, apenas baixa as novidades
               git pull --ff-only
             fi
 
-            # --build: O servidor constrói a imagem (você não precisa de Docker local!)
+            # Comando de diagnóstico: lista os arquivos para vermos se o docker-compose.yml está lá
+            ls -la
+
+            # O comando do docker agora apontando explicitamente para o arquivo se necessário
             docker compose up -d --build
