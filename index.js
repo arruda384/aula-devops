@@ -37,6 +37,8 @@ AAAEDPxDWLIYZzHBLE34Tky4RGSfoQBcdOyItPBC3FwpbqVG0tydCMTjk/xi/OMqQfoL6q
 cnhqzzf89aR7uX7M64wqAAAADWRlcGxveS1hbHVub3M=
 -----END OPENSSH PRIVATE KEY-----
 
+HOSTINGER_API_KEY
+HOSTINGER_VM_ID = 922542
 */
 
 
@@ -49,4 +51,8 @@ Crie um usuário/remote de deploy (você já tem deploy) e use uma chave só par
 No GitHub: Settings → Secrets and variables → Actions e crie VPS_HOST=148.230.73.243, VPS_USER=deploy, VPS_KEY (chave privada da CI), e APP_DIR=/opt/app.
 Exemplo de workflow .github/workflows/deploy.yml:
 
+
+token vps =  mdPEn1LxLDPC0kDtPz2FhqNwJS1mjxSVwDzxsHpAa1eb8ea4
+
 */
+
