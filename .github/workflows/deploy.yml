@@ -31,3 +31,6 @@ jobs:
 
             # O comando do docker agora apontando explicitamente para o arquivo se necessário
             docker compose up -d --build
+
+            docker compose down
+            docker compose up -d --build
