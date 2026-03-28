@@ -38,7 +38,16 @@ resource "aws_ecs_cluster" "main" {
   name = "cluster-aula-devops"
 }
 
+
 # 5. TASK DEFINITION: O "blueprint" ou planta da sua aplicação.
+
+
+# Cria o grupo de logs que você referenciou na linha 57
+resource "aws_cloudwatch_log_group" "app_logs" {
+  name              = "/ecs/meu-app-logs"
+  retention_in_days = 7 # Evita custos desnecessários guardando logs antigos
+}
+
 # Define quanto de CPU/Memória e quais containers subiremos (Sidecar Pattern).
 resource "aws_ecs_task_definition" "app" {
   family                   = "node-app-task"
@@ -95,11 +104,8 @@ resource "aws_ecs_task_definition" "app" {
   ])
 }
 
-# Cria o grupo de logs que você referenciou na linha 57
-resource "aws_cloudwatch_log_group" "app_logs" {
-  name              = "/ecs/meu-app-logs"
-  retention_in_days = 7 # Evita custos desnecessários guardando logs antigos
-}
+
+
 # 6. SERVICE: O gerente que garante que a Task esteja sempre rodando.
 resource "aws_ecs_service" "main" {
   name            = "node-service"
@@ -117,8 +123,8 @@ resource "aws_ecs_service" "main" {
 # 7. AUTO SCALING: A inteligência de elasticidade da nuvem.
 # Define que podemos crescer de 1 até 3 instâncias automaticamente.
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity       = 3
-  min_capacity       = 2
+  max_capacity       = 2
+  min_capacity       = 1
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
