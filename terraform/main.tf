@@ -17,7 +17,7 @@ data "aws_subnets" "default" {
 # 3. SEGURANÇA (IAM): Cria a "identidade" que o ECS usará.
 # Sem isso, o ECS não tem permissão para baixar sua imagem do ECR ou enviar logs.
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole-Aula-Ohio"
+  name = "ecsTaskExecutionRole-Aula-Ohio-v1"
   assume_role_policy = jsonencode({
     Version = "2012-10-17", Statement = [{ 
       Action = "sts:AssumeRole", 
