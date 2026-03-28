@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 1. O GitHub faz o build da imagem (Aqui é o "Satl"/Stage)
+      - name: Build Docker Image
+        run: docker build -t meu-app-node:latest .
+
+      # 2. Envia os arquivos necessários para a VPS
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: deploy
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Garante a pasta limpa
+            mkdir -p /home/deploy/apps/app
+            cd /home/deploy/apps/app
+            
+            # Se não tiver o git, ele clona; se tiver, ele reseta para o novo
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git fetch --all
+              git reset --hard origin/${{ github.ref_name }}
+            fi
+
+            # Sobe o container forçando a reconstrução com os arquivos novos
+            docker compose up -d --build --force-recreate
