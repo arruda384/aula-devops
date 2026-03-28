@@ -85,7 +85,6 @@ resource "aws_ecs_task_definition" "app" {
     }
   ])
 }
-
 # 6. SERVICE: O gerente que garante que a Task esteja sempre rodando.
 resource "aws_ecs_service" "main" {
   name            = "node-service"
