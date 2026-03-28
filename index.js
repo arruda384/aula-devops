@@ -1,3 +1,8 @@
+// index.js
+require('dd-trace').init({
+  logInjection: true // Isso liga o Log com o Trace (essencial para a IA)
+});
+
 const express = require('express');
 const app = express();
 

@@ -43,26 +43,44 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_ecs_task_definition" "app" {
   family                   = "node-app-task"
   network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"] # Serverless: não gerenciamos servidores.
-  cpu                      = "256"        # 0.25 vCPU
-  memory                   = "512"        # 512MB de RAM
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
-      # Container 1: Sua API Node.js
+      # Container 1: Sua API Node.js (Bautizada e Etiquetada)
       name  = "node-app"
       image = "582260131066.dkr.ecr.us-east-2.amazonaws.com/aula-devops/meu-app:latest"
       portMappings = [{ containerPort = 3000, hostPort = 3000 }]
+      
+      # 1. LABELS: O segredo para os Logs aparecerem com nome no Datadog
+      dockerLabels = {
+        "com.datadoghq.ad.logs" = jsonencode([{
+          source  = "nodejs"
+          service = "node-app"
+        }])
+      }
+
+      # 2. VARIÁVEIS DE APM: Para a IA ver as Rotas e Latência
+      environment = [
+        { name = "DD_SERVICE", value = "node-app" },
+        { name = "DD_ENV",     value = "aula" },
+        { name = "DD_VERSION", value = "1.0.0" }
+      ]
     },
     {
-      # Container 2 (Sidecar): Agente do Datadog para monitoramento
+      # Container 2 (Sidecar): Agente Datadog (Configurado para Fargate)
       name  = "datadog-agent"
-      image = "gcr.io/datadoghq/agent:7"
+      image = "public.ecr.aws/datadog/agent:latest" # Recomendado para AWS
       environment = [
         { name = "DD_API_KEY", value = "82a58657981ee1660daa32782df37e58" },
-        { name = "DD_SITE", value = "datadoghq.com" },
-        { name = "DD_ECS_FARGATE", value = "true" }
+        { name = "DD_SITE",    value = "datadoghq.com" },
+        { name = "DD_ECS_FARGATE", value = "true" },
+        { name = "DD_APM_ENABLED", value = "true" }, # Ativa o rastreio de código
+        { name = "DD_LOGS_ENABLED", value = "true" }, # Ativa a coleta de logs
+        { name = "DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL", value = "true" }
       ]
     }
   ])
