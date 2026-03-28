@@ -5,8 +5,6 @@ require('dd-trace').init({
   logInjection: true // Crucial: injeta span_id e trace_id nos logs
 });
 
-const axios = require('axios'); // Adicione isso no topo do arquivo
-
 const express = require('express');
 const app = express();
 
