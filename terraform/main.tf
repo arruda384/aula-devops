@@ -94,6 +94,12 @@ resource "aws_ecs_task_definition" "app" {
     }
   ])
 }
+
+# Cria o grupo de logs que você referenciou na linha 57
+resource "aws_cloudwatch_log_group" "app_logs" {
+  name              = "/ecs/meu-app-logs"
+  retention_in_days = 7 # Evita custos desnecessários guardando logs antigos
+}
 # 6. SERVICE: O gerente que garante que a Task esteja sempre rodando.
 resource "aws_ecs_service" "main" {
   name            = "node-service"
