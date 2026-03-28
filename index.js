@@ -16,6 +16,7 @@ let listaAlunos = [
 
 // Rota padrão para listar
 app.get('/pessoas', (req, res) => {
+  logger("listando pessoas")
   res.json(listaAlunos);
 });
 
@@ -26,6 +27,9 @@ app.post('/pessoas', (req, res) => {
 
   const novoAluno = { id: Date.now(), nome };
   listaAlunos.push(novoAluno);
+
+  logger("criando pessoas")
+
   res.status(201).json(novoAluno);
 });
 
@@ -33,6 +37,8 @@ app.post('/pessoas', (req, res) => {
 
 // 1. Simulação de Erro Fatal (Auto-healing do ECS)
 app.get('/quebrar', (req, res) => {
+  logger("Derrubando app")
+
   console.log("!!! ERRO CRÍTICO: Encerrando processo !!!");
   res.status(500).send("A aplicação caiu! O ECS vai subir outra em breve.");
   process.exit(1); 
@@ -41,9 +47,14 @@ app.get('/quebrar', (req, res) => {
 // 2. Simulação de Stress de Memória (Auto-scaling da AWS + Datadog)
 let vazamento = [];
 app.get('/stress-memoria', (req, res) => {
+
+  logger("stress memoria")
+
   console.log("Iniciando consumo massivo de memória...");
   // Cria um loop que ocupa a RAM rapidamente
   for (let i = 0; i < 1000000; i++) {
+    logger("stress memoria ")
+
     vazamento.push({ dado: new Array(100).fill("STRESS_TEST"), id: i });
   }
   res.json({ status: "Memória sendo drenada!", tamanho: vazamento.length });
