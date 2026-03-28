@@ -54,6 +54,15 @@ resource "aws_ecs_task_definition" "app" {
       name  = "node-app"
       image = "582260131066.dkr.ecr.us-east-2.amazonaws.com/aula-devops/meu-app:latest"
       portMappings = [{ containerPort = 3000, hostPort = 3000 }]
+
+      logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = "/ecs/meu-app-logs"
+        "awslogs-region"        = "us-east-2" # Sua região
+        "awslogs-stream-prefix" = "ecs"
+      }
+    }
       
       # 1. LABELS: O segredo para os Logs aparecerem com nome no Datadog
       dockerLabels = {
@@ -125,3 +134,4 @@ resource "aws_appautoscaling_policy" "memory_policy" {
     }
   }
 }
+
