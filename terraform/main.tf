@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "app" {
     {
       # Container 1: Sua API Node.js
       name  = "node-app"
-      image = "582260131066.dkr.ecr.us-east-2.amazonaws.com/meu-app:latest"
+      image = "582260131066.dkr.ecr.us-east-2.amazonaws.com/aula-devops/meu-app:latest"
       portMappings = [{ containerPort = 3000, hostPort = 3000 }]
     },
     {
